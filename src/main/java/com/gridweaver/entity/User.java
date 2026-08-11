@@ -1,6 +1,9 @@
 package com.gridweaver.entity;
 
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
     @Entity
     @Table(name = "users") // 'user' is often a reserved keyword in databases like PostgreSQL
@@ -10,9 +13,12 @@ import jakarta.persistence.*;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
+        @NotBlank(message = "Username is required")
         @Column(nullable = false, unique = true)
         private String username;
 
+        @Email(message = "Invalid email format")
+        @NotBlank(message = "Email is required")
         private String email;
 
         // Standard Boilerplate: No-args constructor, Getters, and Setters
