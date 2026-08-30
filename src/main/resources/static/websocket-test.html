@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GridWeaver Live Telemetry</title>
+</head>
+<body>
+
+    <h1>GridWeaver Live Telemetry</h1>
+
+    <div id="status">Connecting...</div>
+
+    <pre id="telemetry"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <script>
+
+        const socket = new SockJS("http://localhost:8080/ws");
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+
+            document.getElementById("status").innerText =
+                "WebSocket Connected";
+
+            console.log("Connected: " + frame);
+
+            stompClient.subscribe("/topic/telemetry", function (message) {
+
+                const telemetry = JSON.parse(message.body);
+
+                document.getElementById("telemetry").innerText =
+                    JSON.stringify(telemetry, null, 2);
+
+                console.log("Live Telemetry:", telemetry);
+            });
+
+        }, function (error) {
+
+            document.getElementById("status").innerText =
+                "WebSocket Connection Failed";
+
+            console.error(error);
+        });
+
+    </script>
+
+</body>
+</html>
